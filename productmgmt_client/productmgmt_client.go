@@ -3,17 +3,27 @@ package main
 import (
 	"context"
 	pb "example.com/go-productmgmt-grpc/productmgmt"
+	"fmt"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"log"
 	"time"
 )
 
 const (
-	address = "localhost:50051"
+	address = "172.17.0.2:50051"
 )
 
 func main() {
-	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
+	fmt.Println("Enter an IP Address or keep empty to use default: ")
+	var ipAddress string
+	fmt.Scanln(&ipAddress)
+
+	if ipAddress == "" {
+		ipAddress = address
+	}
+
+	conn, err := grpc.Dial(ipAddress, grpc.FailOnNonTempDialError(true), grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
