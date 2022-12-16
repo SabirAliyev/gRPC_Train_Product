@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package productmgmt;
+
+option go_package = "example.com/go-productmgmt-grpc;go_productmgmt_grpc";
+
+service ProductManagement {
+  rpc CreateProduct (NewProduct) returns (Product) {}
+}
+
+message NewProduct {
+  string name = 1;
+  double value = 2;
+}
+
+message Product {
+  string name = 1;
+  string description = 2;
+  double value = 3;
+  int32 id = 4;
+}
