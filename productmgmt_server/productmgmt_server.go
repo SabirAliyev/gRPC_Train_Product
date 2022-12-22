@@ -21,6 +21,7 @@ var appg application
 type application struct {
 	products interface {
 		Insert(product *models.Product) (int32, error)
+		FindById(int322 int32) (models.Product, error)
 	}
 }
 

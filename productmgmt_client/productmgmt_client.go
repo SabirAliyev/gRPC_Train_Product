@@ -42,13 +42,15 @@ func main() {
 	var exit bool
 
 	for exit != true {
-		fmt.Println("1 - show all products, 2 - create new product")
+		fmt.Printf("1 - find product by ID, \n 2 - create new product")
 		var mode string
 		_, err := fmt.Scanln(&mode)
 
 		if err == nil {
 			if mode == "1" {
-				fmt.Println("Here will be list of products")
+				// var id int32
+				fmt.Println("Enter ID number")
+
 			} else if mode == "2" {
 				var name string
 				var value string

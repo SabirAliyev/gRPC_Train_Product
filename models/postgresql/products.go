@@ -10,7 +10,7 @@ type ProductModel struct {
 	Pool *pgxpool.Pool
 }
 
-func (m *ProductModel) FindById(id string) (models.Product, error) {
+func (m *ProductModel) FindById(id int32) (models.Product, error) {
 	query := `SELECT Id, name, description, value FROM "Products" WHERE Id = $1`
 
 	var prod models.Product

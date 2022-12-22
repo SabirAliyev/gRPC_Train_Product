@@ -14,7 +14,7 @@ COPY . .
 
 WORKDIR /app/productmgmt_server
 
-RUN DATABASE_URL=postgresql://postgresql:mypass@172.17.0.2:5432/products?sslmode=disable go run .
+RUN DATABASE_URL=postgresql://postgres:mypass@172.17.0.2:5432/products?sslmode=disable go run .
 
 #RUN go run productmgmt_server/productmgmt_server.go
 
