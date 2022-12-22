@@ -7,11 +7,12 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"log"
+	"strconv"
 	"time"
 )
 
 const (
-	address = "172.17.0.2:50051"
+	address = "localhost:50051"
 )
 
 func main() {
@@ -36,22 +37,47 @@ func main() {
 
 	c := pb.NewProductManagementClient(conn)
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Hour)
 	defer cancel()
+	var exit bool
 
-	var newProduct = make(map[string]float64)
-	newProduct["Macbook Pro"] = 2500.99
-	newProduct["Lenovo ideaPad"] = 1200.99
+	for exit != true {
+		fmt.Println("1 - show all products, 2 - create new product")
+		var mode string
+		_, err := fmt.Scanln(&mode)
 
-	for name, value := range newProduct {
-		r, err := c.CreateProduct(ctx, &pb.NewProduct{Name: name, Value: value})
-		if err != nil {
-			log.Fatalf("could not create product %v", err)
+		if err == nil {
+			if mode == "1" {
+				fmt.Println("Here will be list of products")
+			} else if mode == "2" {
+				var name string
+				var value string
+
+				fmt.Println("Enter product Name and Value: ")
+				_, err := fmt.Scan(&name, &value)
+				if err != nil {
+					log.Fatalf("could not add product: %v", err)
+				}
+				valueFloat, err := strconv.ParseFloat(value, 64)
+				if err != nil {
+					log.Fatalf("could not convert value to float: %v", err)
+				}
+
+				// sending command to server
+				prod, err := c.CreateProduct(ctx, &pb.NewProduct{Name: name, Value: valueFloat})
+				if err != nil {
+					log.Fatalf("could not create product: %v", err)
+				}
+				fmt.Println("New product successfully created!")
+				log.Printf("Product Details: \n NAME: %s \n VALUE: %f \n ID: %d",
+					prod.GetName(), prod.GetValue(), prod.GetId())
+			} else if mode == "0" {
+				exit = true
+			} else {
+				println("unknown command")
+			}
+		} else {
+			log.Printf("unknown error: %v", err)
 		}
-
-		log.Printf(`Product Details:
-NAME: %s
-VALUE: %f
-ID: %d`, r.GetName(), r.GetValue(), r.GetId())
 	}
 }

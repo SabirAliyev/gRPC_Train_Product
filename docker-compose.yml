@@ -1,0 +1,21 @@
+# docker-compose.yml
+version: '3.1'
+services:
+  app:
+    image: golang:1.18-alpine
+    working_dir: /app
+
+  db:
+    image: postgres
+    container_name: postgresql-d
+    restart: on-failure
+    environment:
+      POSTGRES_USER: postgresql
+      POSTGRES_PASSWORD: mypass
+      POSTGRES_DB: mytestdb
+    volumes:
+      - ./data:/var/lib/postgresql/data
+#  redis:
+#    image: redis
+#    container_name: redis-d
+#    restart: on-failure
