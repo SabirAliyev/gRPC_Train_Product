@@ -6,11 +6,13 @@ option go_package = "example.com/go-productmgmt-grpc;go_productmgmt_grpc";
 
 service ProductManagement {
   rpc CreateProduct (NewProduct) returns (Product) {}
+  rpc GetProduct (Id) returns (Product) {}
 }
 
 message NewProduct {
   string name = 1;
-  double value = 2;
+  string description = 2;
+  double value = 3;
 }
 
 message Product {
@@ -18,4 +20,8 @@ message Product {
   string description = 2;
   double value = 3;
   int32 id = 4;
+}
+
+message Id {
+  int32 id = 1;
 }

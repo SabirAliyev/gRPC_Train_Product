@@ -25,35 +25,6 @@ type application struct {
 	}
 }
 
-type ProductManagementServer struct {
-	pb.UnimplementedProductManagementServer
-}
-
-func (s *ProductManagementServer) CreateProduct(ctx context.Context, prod *pb.NewProduct) (*pb.Product, error) {
-	log.Printf("Recieved new product: %v", prod.GetName())
-
-	product := models.Product{
-		Name:  prod.Name,
-		Value: prod.Value,
-	}
-
-	id, err := appg.insertProduct(&product)
-	if err != nil {
-		log.Fatalf("could not create product: %v", err)
-	}
-
-	return &pb.Product{Name: prod.GetName(), Value: prod.GetValue(), Id: id}, nil
-}
-
-func (app *application) insertProduct(product *models.Product) (int32, error) {
-	id, err := app.products.Insert(product)
-	if err != nil {
-		log.Fatalf("could not insert product %v", err)
-	}
-
-	return id, err
-}
-
 func main() {
 	app := &application{}
 
