@@ -16,12 +16,16 @@ const (
 )
 
 func main() {
-	fmt.Println("Enter an IP Address or keep empty to use default: ")
+	fmt.Println("Enter service IP Address or keep empty to use default: ")
 	var ipAddress string
-	fmt.Scanln(&ipAddress)
+	_, err := fmt.Scanln(&ipAddress)
+	if err != nil {
+		log.Fatalf("could not establish host address")
+	}
 
 	if ipAddress == "" {
 		ipAddress = address
+		fmt.Printf("service IP address set as %v (default) \n", address)
 	}
 
 	conn, err := grpc.Dial(ipAddress, grpc.FailOnNonTempDialError(true), grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
@@ -35,6 +39,10 @@ func main() {
 		}
 	}(conn)
 
+	userInterface(conn)
+}
+
+func userInterface(conn *grpc.ClientConn) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Hour)
 	defer cancel()
 	var exit bool
